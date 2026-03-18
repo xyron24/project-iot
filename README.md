@@ -68,11 +68,11 @@ Sensors → ESP8266 → MQTT (dev.coppercloud.in)
 
 ### 📈 Grafana Dashboard
 
-![Grafana Dashboard](images/combined.png)
+![Grafana Dashboard](images/combined.jpeg)
 
 ### 🔄 Node-RED Flow
 
-![Node-RED Flow](images/nodered.png)
+![Node-RED Flow](images/nodered.jpeg)
 
 ---
 
