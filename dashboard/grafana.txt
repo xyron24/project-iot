@@ -1,0 +1,6 @@
+Grafana dashboard includes:
+- Temperature gauge
+- Humidity gauge
+- Light intensity gauge
+- Motion detection bar chart
+- Relay status panel

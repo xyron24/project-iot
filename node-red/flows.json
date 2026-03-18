@@ -1,0 +1,389 @@
+[
+    {
+        "id": "6cc23e5bb2cb7ac2",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "a0545510fc28b765",
+        "type": "mqtt in",
+        "z": "6cc23e5bb2cb7ac2",
+        "name": "LDR",
+        "topic": "home/ldr",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "ae66103177da8009",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 230,
+        "y": 120,
+        "wires": [
+            [
+                "c6078bc32ddffdd5",
+                "63f5e930bd7881fe"
+            ]
+        ]
+    },
+    {
+        "id": "308262a8fb0bf927",
+        "type": "mqtt in",
+        "z": "6cc23e5bb2cb7ac2",
+        "name": "PIR",
+        "topic": "home/pir",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "90cecef76ee5bfa0",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 230,
+        "y": 240,
+        "wires": [
+            [
+                "0585a94708413dd1",
+                "63f5e930bd7881fe"
+            ]
+        ]
+    },
+    {
+        "id": "4940b0ee3b2b3f09",
+        "type": "mqtt in",
+        "z": "6cc23e5bb2cb7ac2",
+        "name": "DHT",
+        "topic": "home/dht",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "05a7a9d56042dcda",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 230,
+        "y": 360,
+        "wires": [
+            [
+                "34a8bf6c7232f8b9",
+                "63f5e930bd7881fe"
+            ]
+        ]
+    },
+    {
+        "id": "a1424f34f5370753",
+        "type": "mqtt in",
+        "z": "6cc23e5bb2cb7ac2",
+        "name": "RELAY",
+        "topic": "home/relay",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "1bd88c958cde0361",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 230,
+        "y": 480,
+        "wires": [
+            [
+                "b645efe31478cf91",
+                "63f5e930bd7881fe"
+            ]
+        ]
+    },
+    {
+        "id": "0585a94708413dd1",
+        "type": "debug",
+        "z": "6cc23e5bb2cb7ac2",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 220,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "c6078bc32ddffdd5",
+        "type": "debug",
+        "z": "6cc23e5bb2cb7ac2",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 220,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "34a8bf6c7232f8b9",
+        "type": "debug",
+        "z": "6cc23e5bb2cb7ac2",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 200,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "b645efe31478cf91",
+        "type": "debug",
+        "z": "6cc23e5bb2cb7ac2",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 220,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "2482c9c9d6601fb5",
+        "type": "mysql",
+        "z": "6cc23e5bb2cb7ac2",
+        "mydb": "b7ca7c477232cd59",
+        "name": "DBS",
+        "x": 950,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "63f5e930bd7881fe",
+        "type": "function",
+        "z": "6cc23e5bb2cb7ac2",
+        "name": "Collector",
+        "func": "var data = flow.get(\"sensorData\") || {};\n\n// Save last update time\ndata.lastUpdate = Date.now();\n\nif (msg.topic === \"home/ldr\") {\n    data.ldr = parseFloat(msg.payload);\n}\n\nif (msg.topic === \"home/pir\") {\n    data.pir = parseInt(msg.payload);\n}\n\nif (msg.topic === \"home/dht\") {\n    let d = typeof msg.payload === \"string\" ? JSON.parse(msg.payload) : msg.payload;\n    data.temp = d.temp;\n    data.humidity = d.hum;\n}\n\nif (msg.topic === \"home/relay\") {\n    data.relay = msg.payload;\n}\n\nflow.set(\"sensorData\", data);\n\nreturn null;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 280,
+        "wires": [
+            [
+                "fb957b29085407da"
+            ]
+        ]
+    },
+    {
+        "id": "381eab2cd9b930a1",
+        "type": "inject",
+        "z": "6cc23e5bb2cb7ac2",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "2",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 630,
+        "y": 480,
+        "wires": [
+            [
+                "fb957b29085407da"
+            ]
+        ]
+    },
+    {
+        "id": "fb957b29085407da",
+        "type": "function",
+        "z": "6cc23e5bb2cb7ac2",
+        "name": "function",
+        "func": "var data = flow.get(\"sensorData\") || {};\n\n// If no recent update → do NOT insert\nif (!data.lastUpdate || (Date.now() - data.lastUpdate) > 10000) {\n    return null;   // stop database write\n}\n\nmsg.topic = `\n    INSERT INTO sensor_data \n    (PIR, LDR, TEMP, HUMIDITY, RELAY)\n    VALUES (?, ?, ?, ?, ?)\n`;\n\nmsg.payload = [\n    data.pir || 0,\n    data.ldr || 0,\n    data.temp || 0,\n    data.humidity || 0,\n    data.relay || \"OFF\"\n];\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 900,
+        "y": 500,
+        "wires": [
+            [
+                "2482c9c9d6601fb5"
+            ]
+        ]
+    },
+    {
+        "id": "ae66103177da8009",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "dev.coppercloud.in",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "90cecef76ee5bfa0",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "dev.coppercloud.in",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "05a7a9d56042dcda",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "dev.coppercloud.in",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "1bd88c958cde0361",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "dev.coppercloud.in",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "b7ca7c477232cd59",
+        "type": "MySQLdatabase",
+        "name": "DATABASE APNA",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "home_automation",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "665c04821bd1bc94",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-mysql": "3.0.0"
+        }
+    }
+]
